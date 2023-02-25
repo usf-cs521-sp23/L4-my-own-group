@@ -10,11 +10,11 @@ const int WORD_SIZE = 5;
 
 int playGame(char *guess){
 
-    printf("The word to guess is: %s\n", guess);
+    // printf("The word to guess is: %s\n", guess);
     char guessWord[6];
     strncpy(guessWord, guess, 5);
     guessWord[5] = '\0';
-    printf("%s\n", guessWord);
+    // printf("%s\n", guessWord);
     
     char userGuess[6];
     int usedChar[26] = { 0 };
@@ -27,12 +27,12 @@ int playGame(char *guess){
             notValidWord = true;
             printf("Enter your guess: ");
             scanf("%s", userGuess);
-            printf("user guess: %s\n", userGuess);
+            printf("Your guess is: %s\n", userGuess);
             if(strlen(userGuess) != 5){
                 printf("That is not 5 characters, please try again... \n");
             }
             if(strlen(userGuess) == 5){
-                printf("valid length");
+                // printf("valid length");
                 for (int j = 0; j < 5; j++){
                     if (userGuess[j] < 97 || userGuess[j] > 122){
                         printf("this guess contains invalid characters, try again...\n");
@@ -47,6 +47,7 @@ int playGame(char *guess){
                 char line[10];
                 // check if it's a valid word against dictionary
                 while(fgets(line, 10, validWordFile) != NULL){
+                    // need to fix this logic
                     if(strstr(line, userGuess) == 0){
                         printf("it's a valid word\n");
                         notValidWord = false;
@@ -60,9 +61,7 @@ int playGame(char *guess){
             }  
         }
 
-        
-
-        printf("Your guess is: %s\n", userGuess);
+        // printf("Your guess is: %s\n", userGuess);
         // printf("userGuess Length is: %d\n", strlen(userGuess));
 
         // input letters in guess into array of used letters
@@ -87,13 +86,18 @@ int playGame(char *guess){
             // printf("GuessWord: %s\n", guessWord);
             // printf("userGuess: %s\n", userGuess);
             if(guessWord[j] == userGuess[j]){
+                printf("\033[0;32m");
                 printf("o");
+                printf("\033[0;37m");
             } else if(strchr(guessWord, userGuess[j]) != NULL){
+                printf("\033[0;33m");
                 printf("!");
+                printf("\033[0;37m");
             } else {
+                printf("\033[0;31m");
                 printf("x");
+                printf("\033[0;37m");
             }
-            // puts("");
         }
         puts("");
 
@@ -105,16 +109,13 @@ int playGame(char *guess){
         }
         puts("");
 
-        if(strncmp(guessWord, userGuess, 5) == 0){
-            
+        if(strncmp(guessWord, userGuess, 5) == 0){   
             return 0;
-            
         } else {
             strcpy(userGuess, "");
-            printf("You have %d guess(es) remaining!\n", i);
+            printf("You have %d guess(es) remaining!\n", i - 1);
         }
     }
-
     return 1;
 }
 
@@ -172,14 +173,15 @@ void selectRandomWord(char *wordToGuess, int *count){
     int totalValidWords = *count;
     srand(time(NULL));
     int randomNumber = (rand() % totalValidWords) + 1;
-    printf("randomNumber is %d\n", randomNumber);
+    // printf("randomNumber is %d\n", randomNumber);
     FILE *readFile = fopen(validWordFilePath, "r");
     if(readFile == NULL){
         perror("fopen");
     }
 
     char word[WORD_SIZE + 1];
-    strncpy(word, wordToGuess, WORD_SIZE);
+    word[5] = '\0';
+    // strncpy(word, wordToGuess, WORD_SIZE);
     // printf("This is word: %s\n", word);
 
     // pick 1 word randomly 
@@ -189,7 +191,7 @@ void selectRandomWord(char *wordToGuess, int *count){
     while (fgets(line, 10, readFile) != NULL){
         if (currentLine == randomNumber){
             strncpy(word, line, WORD_SIZE);
-            printf("This is word: %s\n", word);
+            // printf("This is word: %s\n", word);
             // test = selectedGuessWord;
             // strcpy(wordToGuess, selectedGuessWord);
             break;
@@ -197,22 +199,7 @@ void selectRandomWord(char *wordToGuess, int *count){
         currentLine++;
     }
     strcpy(wordToGuess, word);
-    printf("wordToGuess is %s\n", wordToGuess);
-
-
-    // printf("word to guess is: %s\n", selectedGuessWord);
-    // for(int i = 0; i < strlen(selectedGuessWord); i++){
-    //     // printf("WordToGuess[%d] is %c\n", i, wordToGuess[i]);
-    // }
-    // printf("guess length is: %d\n", strlen(selectedGuessWord));
-    // selectedGuessWord[5] = '\0';
-    // printf("word to guess is: %s\n", selectedGuessWord);
-    // for(int i = 0; i < strlen(selectedGuessWord); i++){
-        // printf("WordToGuess[%d] is %c\n", i, wordToGuess[i]);
-    // }
-    // printf("guess length is: %d\n", strlen(wordToGuess));
-    // strcpy(wordToGuess, selectedGuessWord);
-    // return test;
+    // printf("wordToGuess is %s\n", wordToGuess);
     fclose(readFile);
 }
 
@@ -227,55 +214,26 @@ int main(void)
     printf("Welcome to Wordle!\n");
     printf("Please wait while we load up...\n");
     printf("---------------------------------------\n");
-    
+
     if (generateWordFile(&totalValidWords) != 0 || totalValidWords == 0){
         printf("Program is quitting in error...\n");
         return 1;
     }
-    printf("total valid words: %d\n", totalValidWords);
-    printf("---------------------------------------\n");
-    printf("Hello Player!\n");
+    // printf("total valid words: %d\n", totalValidWords);
+    // printf("---------------------------------------\n");
+    printf("Hello!\n");
     printf("Please enter your name to play Wordle: ");
     // need to handle case where name is a string separated by space
     scanf("%s", playerName);
     // fgets(name, 100, stdin);
     printf("Hi, %s! Let's begin...\n", playerName);
-    printf("length of player name: %d\n", strlen(playerName));
+    // printf("length of player name: %d\n", strlen(playerName));
     printf("---------------------------------------\n");
 
     bool play = true;
     while (play){
         // generate word
-        // selectRandomWord(wordToGuess, &totalValidWords);
-
-        srand(time(NULL));
-        int randomNumber = (rand() % totalValidWords) + 1;
-        printf("randomNumber is %d\n", randomNumber);
-        FILE *readFile = fopen(validWordFilePath, "r");
-        if(readFile == NULL){
-            perror("fopen");
-        }
-    // printf("This is word: %s\n", word);
-
-    // pick 1 word randomly 
-    // set that to wordToGuess
-        char line[10];
-        int currentLine = 1;
-        while (fgets(line, 10, readFile) != NULL){
-            // printf("%s\n", line);
-            if (currentLine == randomNumber){
-                strncpy(wordToGuess, line, WORD_SIZE);
-                // printf("This is word: %s\n", word);
-            // test = selectedGuessWord;
-            // strcpy(wordToGuess, selectedGuessWord);
-                break;
-            }
-            currentLine++;
-        }
-        // strcpy(wordToGuess, word);
-        // printf("wordToGuess is %s\n", wordToGuess);
-
-        printf("word to guess: %s\n", wordToGuess);
+        selectRandomWord(wordToGuess, &totalValidWords);
 
         char response[10];
         int result = playGame(wordToGuess); 
@@ -283,6 +241,7 @@ int main(void)
             printf("Congratulations %s, you win!\n", playerName);
         } else {
             printf("Oops, looks like you lose this one, %s.\n", playerName);
+            printf("The correct answer is %s.\n", wordToGuess);
         }
 
         printf("want to play again? [Y/N] --> ");
@@ -294,7 +253,4 @@ int main(void)
        
     printf("Thanks for playing Wordle, %s! Have a good day!\n", playerName);
     
-
-    //
-
 }
