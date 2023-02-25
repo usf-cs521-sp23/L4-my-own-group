@@ -43,12 +43,12 @@ int playGame(char *guess){
                 userGuess[5] = '\0';
             }
             if(strlen(userGuess) == 5 && !containsInvalidChars){
-                FILE *validWordFile = fopen("./valid_words", "r");
-                char line[10];
+                FILE *validWordFile = fopen(validWordFilePath, "r");
+                char line[6];
                 // check if it's a valid word against dictionary
-                while(fgets(line, 10, validWordFile) != NULL){
+                while(fgets(line, 6, validWordFile) != NULL){
                     // need to fix this logic
-                    if(strstr(line, userGuess) == 0){
+                    if(strcmp(line, userGuess) == 0){
                         printf("it's a valid word\n");
                         notValidWord = false;
                         break;
