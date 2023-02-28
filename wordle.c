@@ -10,13 +10,13 @@ const int WORD_SIZE = 5;
 
 int playGame(char *guess){
 
-    //printf("The word to guess is: %s\n", guess);
-    char guessWord[6];
+    printf("The word to guess is: %s\n", guess);
+    char guessWord[6] = { 0 };
     strncpy(guessWord, guess, 5);
     guessWord[5] = '\0';
     // printf("%s\n", guessWord);
     
-    char userGuess[6];
+    char userGuess[6] = { 0 };
     int usedChar[26] = { 0 };
     bool containsInvalidChars = false;
     bool notValidWord = true;
@@ -51,7 +51,7 @@ int playGame(char *guess){
                 while(fgets(line, 6, validWordFile) != NULL){
                     // need to fix this logic
                     if(strcmp(line, userGuess) == 0){
-                        printf("it's a valid word\n");
+                        // printf("it's a valid word\n");
                         notValidWord = false;
                         break;
                     } 
@@ -140,24 +140,35 @@ int generateWordFile(int *count){
         if(strlen(line) == 6)
         {
             bool isWord = true;
-            char str1[6];
-            strcpy(str1, line);
-            // printf("line: %s\n", line);
+            char str1[6] = { 0 };
+            strncpy(str1, line, 5);
+            str1[5] = '\0';
+            // printf("line: %s", line);
+            // printf("this is str1: %s\n", str1);
+            // bool equal = str1[5] == '\n';
+            // printf("this is str1[5]: %c\n", str1[5]);
+            // printf("this is equal: %d\n", equal);
+
 
             if (str1[0] > 64 &&  str1[0] < 91){ // added rule for isWord = false if it's a proper noun 
                     isWord = false;
             } else {
-                for (int i = 0; i < strlen(str1) - 1; i++){
+                for (int i = 0; i < strlen(str1); i++){// printf("current char: %c\n", str1[i]);
+
                     if (str1[i] > 64 &&  str1[i] < 91){ // if it's upper case, we switch it to lower case
                         str1[i] += 32;
                     } 
                     if (str1[i] < 97 || str1[i] > 122) { // if it's not a lower case by now, it's not a valid word
+                        // printf("in if loop current char: %c\n", str1[i]);
                         isWord = false;
                     }
                 }
             }
+            // printf("this is isWord: %d\n", isWord);
             if (isWord){
-                fputs(str1, outputFile);
+                // str1[5] = '\n';
+                // printf("str1: %s", str1);
+                fputs(str1, outputFile);fputs("\n", outputFile);
                 count_copy++; 
                 fflush(outputFile);
             } 
@@ -165,10 +176,10 @@ int generateWordFile(int *count){
         fflush(wordFile);
     }
     *count = count_copy;
-    return 0;
-
     fclose(wordFile);
     fclose(outputFile);
+
+    return 0;
 }
 
 void selectRandomWord(char *wordToGuess, int *count){
@@ -182,6 +193,7 @@ void selectRandomWord(char *wordToGuess, int *count){
     }
 
     char word[WORD_SIZE + 1];
+    memset(word, 0, WORD_SIZE * sizeof(char));
     word[5] = '\0';
     // strncpy(word, wordToGuess, WORD_SIZE);
     // printf("This is word: %s\n", word);
@@ -193,7 +205,8 @@ void selectRandomWord(char *wordToGuess, int *count){
     while (fgets(line, 10, readFile) != NULL){
         if (currentLine == randomNumber){
             strncpy(word, line, WORD_SIZE);
-            // printf("This is word: %s\n", word);
+            printf("This is line: %s\n", line);
+            printf("This is word: %s\n", word);
             // test = selectedGuessWord;
             // strcpy(wordToGuess, selectedGuessWord);
             break;
@@ -238,6 +251,7 @@ int main(void)
         // generate word
         selectRandomWord(wordToGuess, &totalValidWords);
         char response[10];
+        printf("word to guess: %s\n", wordToGuess);
         int result = playGame(wordToGuess); 
         if(result == 0){
             char command[100];
@@ -257,5 +271,4 @@ int main(void)
     }
        
     printf("Thanks for playing Wordle, %s! Have a good day!\n", playerName);
-    
 }
