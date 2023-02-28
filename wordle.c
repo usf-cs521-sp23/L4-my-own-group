@@ -10,7 +10,7 @@ const int WORD_SIZE = 5;
 
 int playGame(char *guess){
 
-    printf("The word to guess is: %s\n", guess);
+    //printf("The word to guess is: %s\n", guess);
     char guessWord[6];
     strncpy(guessWord, guess, 5);
     guessWord[5] = '\0';
