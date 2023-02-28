@@ -10,7 +10,7 @@ const int WORD_SIZE = 5;
 
 int playGame(char *guess){
 
-    // printf("The word to guess is: %s\n", guess);
+    printf("The word to guess is: %s\n", guess);
     char guessWord[6];
     strncpy(guessWord, guess, 5);
     guessWord[5] = '\0';
@@ -20,7 +20,7 @@ int playGame(char *guess){
     int usedChar[26] = { 0 };
     bool containsInvalidChars = false;
     bool notValidWord = true;
-
+    // keep track of wins and losses and print , read to file **
     for(int i = 6; i > 0; i--){
         while((strlen(userGuess) != 5) || containsInvalidChars || notValidWord){
             containsInvalidChars = false;
@@ -42,6 +42,8 @@ int playGame(char *guess){
                 }
                 userGuess[5] = '\0';
             }
+
+            // try to see if theres a better way to check if its a valid word **
             if(strlen(userGuess) == 5 && !containsInvalidChars){
                 FILE *validWordFile = fopen(validWordFilePath, "r");
                 char line[6];
@@ -225,6 +227,7 @@ int main(void)
     printf("Please enter your name to play Wordle: ");
     // need to handle case where name is a string separated by space
     scanf("%s", playerName);
+
     // fgets(name, 100, stdin);
     printf("Hi, %s! Let's begin...\n", playerName);
     // printf("length of player name: %d\n", strlen(playerName));
@@ -234,11 +237,13 @@ int main(void)
     while (play){
         // generate word
         selectRandomWord(wordToGuess, &totalValidWords);
-
         char response[10];
         int result = playGame(wordToGuess); 
         if(result == 0){
-            printf("Congratulations %s, you win!\n", playerName);
+            char command[100];
+                sprintf(command, "cowsay Congratulations %s, you win!", playerName);
+                system(command);
+
         } else {
             printf("Oops, looks like you lose this one, %s.\n", playerName);
             printf("The correct answer is %s.\n", wordToGuess);
