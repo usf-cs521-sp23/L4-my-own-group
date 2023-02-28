@@ -8,6 +8,7 @@ const char *wordFilePath = "/usr/share/dict/words";
 const char *validWordFilePath = "./valid_words";
 const int WORD_SIZE = 5;
 
+
 int playGame(char *guess){
 
     //printf("The word to guess is: %s\n", guess);
@@ -20,7 +21,6 @@ int playGame(char *guess){
     int usedChar[26] = { 0 };
     bool containsInvalidChars = false;
     bool notValidWord = true;
-    // keep track of wins and losses and print , read to file **
     for(int i = 6; i > 0; i--){
         while((strlen(userGuess) != 5) || containsInvalidChars || notValidWord){
             containsInvalidChars = false;
@@ -43,7 +43,6 @@ int playGame(char *guess){
                 userGuess[5] = '\0';
             }
 
-            // try to see if theres a better way to check if its a valid word **
             if(strlen(userGuess) == 5 && !containsInvalidChars){
                 FILE *validWordFile = fopen(validWordFilePath, "r");
                 char line[6];
